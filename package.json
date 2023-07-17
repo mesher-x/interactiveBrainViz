@@ -1,17 +1,28 @@
 {
   "devDependencies": {
-    "connect-livereload": "^0.5.2",
-    "grunt": "^0.4.5",
-    "grunt-browserify": "^3.0.1",
-    "grunt-contrib-concat": "^0.5.0",
-    "grunt-contrib-connect": "^0.9.0",
-    "grunt-contrib-uglify": "^0.6.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "uglify": "^0.1.3"
+    "browserify": "^17.0.0",
+    "concat": "^1.0.3",
+    "http-server": "^14.1.1",
+    "live-server": "^1.2.1",
+    "npm-run-all": "^4.1.5",
+    "onchange": "^7.1.0",
+    "uglify-js": "^3.14.4"
   },
   "dependencies": {
     "jquery": "^2.1.4",
     "ndarray": "^1.0.16",
     "underscore": "^1.8.3"
+  },
+  "scripts": {
+    "concat:build": "concat -o js/build/app.js js/neuron.js js/activeSignal.js js/staticSignal.js js/particlePool.js js/particle.js js/activeAxon.js js/axon.js js/comment.js js/conbox.js js/neuralNet.js js/loaders.js js/scene.js js/main.js js/gui.js js/run.js js/events.js js/dataSetAPI.js",
+    "concat:vendor": "concat -o js/vendor/vendor-merge.js js/vendor/underscore.js js/vendor/jquery.min.js js/vendor/Detector.js js/vendor/dat.gui.min.js js/vendor/stats.min.js js/vendor/three.js js/vendor/OrbitControls.js js/vendor/OBJLoader.js js/vendor/tweenmax.min.js",
+    "uglify:build": "uglifyjs js/build/app.js --output js/build/app.min.js --source-map",
+    "uglify:vendor": "uglifyjs js/vendor/vendor-merge.js --output js/vendor/vendor-merge.min.js",
+    "browserify": "browserify js/build/app.js -o js/build/deploy.js",
+    "watch": "onchange 'js/*.js' -- npm run concat:build && npm run uglify:build",
+    "connect": "http-server . -p 9001",
+    "build": "npm run concat:build && npm run uglify:build && npm run browserify",
+    "vendor": "npm run concat:vendor && npm run uglify:vendor",
+    "serve": "npm-run-all --parallel connect watch"
   }
 }
